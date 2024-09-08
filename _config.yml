@@ -10,10 +10,10 @@
 ############################
 
 # Name of website
-title: My website
+title: Mahdi Abo Tafish
 
 # Your name to show in the footer
-author: Some Person
+author: Mahdi Abo Tafish
 
 ###############################################
 # --- List of links in the navigation bar --- #
@@ -50,17 +50,17 @@ round-avatar: true
 # You can change the order that they show up on the page by changing the order here.
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
-  email: "someone@example.com"
+  email: "m1hdi1t@gmail.com"
   rss: true  # remove this line if you don't want to show an RSS link at the bottom
-  facebook: deanattali
-  github: daattali
-  twitter: daattali
-  patreon: DeanAttali
-  youtube: "@daattali"
-  whatsapp: 15551212
-#  medium: yourname
+  facebook: https://www.facebook.com/mahdi.abotafish
+  github: https://github.com/noone-m
+  twitter: https://x.com/M1Hdi123
+  # patreon: DeanAttali
+  # youtube: "@daattali"
+  # whatsapp: +963 9
+  medium: https://medium.com/@m1hdi1t
 #  reddit: yourname
-#  linkedin: daattali
+  linkedin: https://www.linkedin.com/in/mahdi-abo-tafish-b57b97268/
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
@@ -77,7 +77,7 @@ social-network-links:
 #  ORCID: your ORCID ID
 #  google-scholar: your google scholar
 #  discord: "invite_code" or "users/userid" or "invite/invite_code" 
-#  kaggle: yourname
+  kaggle: https://www.kaggle.com/mahdiat11
 #  hackerrank: yourname
 #  gitlab: yourname
 #  itchio: yourname
