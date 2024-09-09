@@ -21,11 +21,7 @@ author: Mahdi Abo Tafish
 
 navbar-links:
   About Me: "aboutme"
-  Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
-
+  
 ################
 # --- Logo --- #
 ################
@@ -52,15 +48,15 @@ round-avatar: true
 social-network-links:
   email: "m1hdi1t@gmail.com"
   rss: true  # remove this line if you don't want to show an RSS link at the bottom
-  facebook: https://www.facebook.com/mahdi.abotafish
-  github: https://github.com/noone-m
-  twitter: https://x.com/M1Hdi123
+  facebook: mahdi.abotafish
+  github: noone-m
+  twitter: M1Hdi123
   # patreon: DeanAttali
   # youtube: "@daattali"
   # whatsapp: +963 9
-  medium: https://medium.com/@m1hdi1t
+  medium: @m1hdi1t
 #  reddit: yourname
-  linkedin: https://www.linkedin.com/in/mahdi-abo-tafish-b57b97268/
+  linkedin: mahdi-abo-tafish-b57b97268/
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
@@ -77,7 +73,7 @@ social-network-links:
 #  ORCID: your ORCID ID
 #  google-scholar: your google scholar
 #  discord: "invite_code" or "users/userid" or "invite/invite_code" 
-  kaggle: https://www.kaggle.com/mahdiat11
+  kaggle: mahdiat11
 #  hackerrank: yourname
 #  gitlab: yourname
 #  itchio: yourname
