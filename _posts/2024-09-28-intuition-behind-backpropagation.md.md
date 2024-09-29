@@ -51,7 +51,7 @@ Let's now see how this process will occur in a neural network.
 
 consider this simple neural net:
 
-![simple artificial neural network](http://localhost:4000/assets/img/simple-nn.jpg)
+![simple artificial neural network](/assets/img/simple-nn.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 Neural Networks are functions (a very complex one).
@@ -74,7 +74,7 @@ Computational graphs are directed graphs where the nodes correspond to mathemati
 **A computational graph is not exclusive to neural networks.**, any function can be written as a Computational Graph.
 For example:
 if we want to represent $$ y = 2\times x+4  $$  the computational graph would be like this :
-![simple computational graph 1](http://localhost:4000/assets/img/computational_graph.jpg)
+![simple computational graph 1](/assets/img/computational_graph.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 Given this equation
@@ -97,7 +97,7 @@ $$\frac{d(2 \times x + 4)}{d(x)} = \frac{d(2 \times x + 4)}{d(2 \times x)} \time
 
 $$= 1 \times 2 = 2 $$
 
-![simple computational graph 1 backward](http://localhost:4000/assets/img/computational_graph_backward.jpg)
+![simple computational graph 1 backward](/assets/img/computational_graph_backward.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 
@@ -107,7 +107,7 @@ let's take more complex example:
 $$ z = (3 \times x + 4 \times y)^3 $$
 
 the computational graph is :
-![simple computational graph 2](http://localhost:4000/assets/img/graph2.jpg)
+![simple computational graph 2](/assets/img/graph2.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 
@@ -139,20 +139,20 @@ $$= 3 \times \ (4 \times y + 3 \times x)^2 \times 3$$
 
 $$= 9 \times \ (4 \times y + 3 \times x)^2$$
 
-![simple computational graph 2 backward](http://localhost:4000/assets/img/graph2_backward.jpg)
+![simple computational graph 2 backward](/assets/img/graph2_backward.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 
 
 now let's represent the neural network as computational graph, and for simplicity consider $$g$$ is a linear activation (no activation) in the first and second layer :
 
-![computational graph for neural network](http://localhost:4000/assets/img/computational-graph-neural-net.jpg)
+![computational graph for neural network](/assets/img/computational-graph-neural-net.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 
 now let's illustrate the backward pass:
 
-![computational graph for neural network](http://localhost:4000/assets/img/computational_graph_nn.jpg)
+![computational graph for neural network](/assets/img/computational_graph_nn.jpg)
 <p align="center">Image by the author.</p>
 ------------------------
 
