@@ -10,16 +10,17 @@
 ############################
 
 # Name of website
-title: Mahdi Abo Tafish
+title: Mahdi Abu Tafish
 
 # Your name to show in the footer
-author: Mahdi Abo Tafish
+author: Mahdi Abu Tafish
 
 ###############################################
 # --- List of links in the navigation bar --- #
 ###############################################
 
 navbar-links:
+  Resources: "resources"
   About Me: "aboutme"
   
 ################
