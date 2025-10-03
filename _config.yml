@@ -20,6 +20,7 @@ author: Mahdi Abu Tafish
 ###############################################
 
 navbar-links:
+  Blog: "blog"
   Resources: "resources"
   About Me: "aboutme"
   

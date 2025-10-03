@@ -13,3 +13,5 @@ Gemfile.lock
 beautiful-jekyll-theme-*.gem
 
 resource_example.md
+
+run_server_locally.txt
