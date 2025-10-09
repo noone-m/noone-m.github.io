@@ -23,3 +23,9 @@ I pretty much also dislike **LinkedIn**, because it is dull. I feel like people 
 Recently I am trying to do what I can with **limited electricity** in Suwayda. It is only 2 hours a day, so I don't have much time to use my laptop. When I used to live in my university dorm, it was 24h/day, as a result of that it was hard for me to adapt at first. I am going to move to Jaramana in the middle to the end of this month, and I expect getting more electricity there.
 I am trying to refresh my memory about **ML/DL** after a long period of not studying or programming because of the plight in Suwayda, by writing on papers as an alternative right now.
 
+**Sat, Oct 9 2025 4:00 PM**
+
+Yesterday, out of nowhere, I got an interview with a company called Bemo.
+Today, I passed the HR interview, and now I’m moving on to the technical interview and
+I also took the Duolingo English Test, and this time I’m more optimistic.
+
