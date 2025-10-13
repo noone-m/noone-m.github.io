@@ -25,7 +25,8 @@ I am trying to refresh my memory about **ML/DL** after a long period of not stud
 
 **Sat, Oct 9 2025 4:00 PM**
 
-Yesterday, out of nowhere, I got an interview with a company called Bemo.
+Yesterday, out of nowhere, I got an interview with a company called Beno.
 Today, I passed the HR interview, and now I’m moving on to the technical interview and
 I also took the Duolingo English Test, and this time I’m more optimistic.
+
 
