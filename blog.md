@@ -29,4 +29,8 @@ Yesterday, out of nowhere, I got an interview with a company called Beno.
 Today, I passed the HR interview, and now I’m moving on to the technical interview and
 I also took the Duolingo English Test, and this time I’m more optimistic.
 
+**Tue, Oct 14 2025 6:00 PM**
 
+I got 120 on the DET.It was a surprise to me because I thought I would get a higher score. I still believe I deserve better,but life is unexpected and unfair.
+
+![DET](/assets/img/det.png)
