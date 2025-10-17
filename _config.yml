@@ -12,10 +12,12 @@
 # Name of website
 title: Mahdi Abu Tafish
 
-description: Official personal website of Mahdi Abo Tafish
+description: Official personal website of Mahdi Abu Tafish
 
 # Your name to show in the footer
 author: Mahdi Abu Tafish
+
+favicon: /assets/img/favicon.png
 
 ###############################################
 # --- List of links in the navigation bar --- #
