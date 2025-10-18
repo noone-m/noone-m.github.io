@@ -164,10 +164,12 @@
   <link rel="stylesheet" href="{{ "/assets/css/staticman.css" | relative_url }}">
   {% endif %}
 
-  {% assign favicon_exists = site.static_files | where: "path", "/favicon.png" | size %}
+  <!-- {% assign favicon_exists = site.static_files | where: "path", "/favicon.png" | size %}
   {% if favicon_exists == 1 %}
   <link rel="icon" href="{{ '/favicon.png' | relative_url }}" />
-  {% endif %}
+  {% endif %} -->
+  <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"> -->
+  <link rel="icon" type="image/png"  href="/favicon.png">
 
   {% if page.head-extra %}
     {% for file in page.head-extra %}
