@@ -34,3 +34,6 @@ I also took the Duolingo English Test, and this time I’m more optimistic.
 I got 120 on the DET.It was a surprise to me because I thought I would get a higher score. I still believe I deserve better,but life is unexpected and unfair.
 
 ![DET](/assets/img/det.png)
+
+**Sun, Oct 26 2025 2:00 PM**
+Beno company refused me. It seems my fate is working on freelancing projects.
