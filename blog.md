@@ -14,7 +14,7 @@ Unfortunately, the camera stopped during the test, so my results weren’t certi
 
 On the bright side, I’ve been learning about **evolution theory** lately. It’s amazing to see how life adapts over generations through small genetic changes!
 
-**Sat, Oct 4 2025 12:35 PM**
+**Sat, Oct 4 2025 12:35 PM** <a id="linkedin-opinion"></a>
 
 I applied to **over than 20** internships and junior roles in AI/Programming related jobs, never got an interview. I don't understand why. I believe I'm far better than the majority of employed students in tech industry in Syria, but for some reason I'm not even getting a chance.
 
@@ -36,4 +36,19 @@ I got 120 on the DET.It was a surprise to me because I thought I would get a hig
 ![DET](/assets/img/det.png)
 
 **Sun, Oct 26 2025 2:00 PM**
+
 Beno company refused me. It seems my fate is working on freelancing projects.
+
+**Sun, Nov 30 2025 11:00 PM**
+
+The best way to learn now is by using LLMs. They can speed up the learning process because they provide precise, to-the-point explanations, and their answers are tailored to you.
+
+**Fri, Dec 5 2025 12:00 PM**
+
+I love compound words in German. They make total sense.
+
+**Sat, Dec 6 2025 3:15 AM**
+
+I think I was a bit too harsh about LinkedIn earlier in my blog.  
+There are actually many great people on the platform who genuinely provide valuable content.  
+[Here’s the entry I’m referring to.](/blog#linkedin-opinion)
