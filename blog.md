@@ -52,3 +52,8 @@ I love compound words in German. They make total sense.
 I think I was a bit too harsh about LinkedIn earlier in my blog.  
 There are actually many great people on the platform who genuinely provide valuable content.  
 [Here’s the entry I’m referring to.](/blog#linkedin-opinion)
+
+**Sat, Dec 14 2025 7:15 PM**
+
+Today, I'll start reading `Deep Learning: Foundations and Concepts Book by Christopher M. Bishop • Hugh Bishop` It is a big book with 656 pages, so I expect I wil finishe the book within `120 days`.
+
