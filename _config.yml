@@ -25,6 +25,7 @@ navbar-links:
   Blog: "blog"
   Resources: "resources"
   About Me: "aboutme"
+  Portfolio: "portfolio"
   
 ################
 # --- Logo --- #
