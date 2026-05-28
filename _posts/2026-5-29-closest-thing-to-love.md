@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The Closest Thing to Love
-tags: ["love", "society", "philosophy", "relationships"]
+tags: ["love", "fiction", "relationships", "existentialism"]
 ---
 
 > A short story about something I was thinking about.
@@ -229,5 +229,3 @@ Then he nodded.
 She looked at him for a long moment.
 
 Outside, the rain softened against the glass.
-
----
