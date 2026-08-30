@@ -63,30 +63,18 @@ The goal was not to replace doctors, but to build a platform that could help pat
 Meddit combines an AI-powered medical interview with health information and access to professional care, delivered through a Flutter mobile app for patients, a web dashboard for doctors, and an asynchronous FastAPI backend.
 
 At the core of the system is a multi-agent architecture coordinated by a central orchestrator (**ChatService**), which routes each patient message through a pipeline of specialized agents:
-
-1. **Classify intent** : an intent classifier determines whether the message is a medical interview request, a general health question, an out-of-scope request, or something requiring clarification, and routes it accordingly.
-
-2. **Clarify ambiguous input** : when the user's intent is unclear, a dedicated clarifier agent asks a short follow-up question before proceeding.
-
-3. **Answer general health questions through RAG** : a retrieval-augmented generation pipeline enriches the query, retrieves relevant passages from a controlled, indexed medical knowledge base, reranks them for relevance, checks whether the retrieved context is sufficient, and only then generates an answer grounded in those sources, reducing hallucination and keeping responses traceable to their origin.
-
-4. **Extract structured medical information** : a dedicated extraction agent converts free-form conversation into a structured medical record: chief complaint, symptoms and severity, vital signs, red-flag symptoms, medical history, lifestyle context, and pain assessment. The agent merges new input field-by-field into the existing record so that previously captured details are never lost, even across multiple turns.
-
-5. **Assess urgency through a triage engine** : the structured medical information is evaluated against a five-level severity scale (Crisis, High, Medium, Low, None), or flagged as needing more information. Each triage decision is accompanied by an explicit rationale, the logic used to reach the classification and the logic used to exclude other paths, rather than a bare label.
-
-6. **Recommend a medical specialty** : when the triage outcome indicates a doctor visit is appropriate, a recommendation agent matches the patient's condition against the platform's available specialties and returns a specific recommendation with a stated reason.
-
-7. **Connect patients with doctors through online video consultations** : patients can browse available doctors filtered by the recommended specialty and book or join a live consultation directly from the app.
-
-8. **Generate a structured SOAP report** : once a consultation is needed, the system automatically compiles the interview, triage assessment, and history into a standard SOAP-format report (Subjective, Objective, Assessment, Plan), giving the doctor a ready summary before the session starts.
-
-9. **Monitor for safety and explainability** : every AI-generated output is paired with a computed confidence score, and all inputs/outputs are logged in an auditable trail, so that both the reasoning behind a triage decision and the sources behind a RAG answer can be reviewed and verified.
-
+1. **Classify intent**: an intent classifier determines whether the message is a medical interview request, a general health question, an out-of-scope request, or something requiring clarification, and routes it accordingly.
+2. **Clarify ambiguous input**: when the user's intent is unclear, a dedicated clarifier agent asks a short follow-up question before proceeding.
+3. **Answer general health questions through RAG**: a retrieval-augmented generation pipeline enriches the query, retrieves relevant passages from a controlled, indexed medical knowledge base, reranks them for relevance, checks whether the retrieved context is sufficient, and only then generates an answer grounded in those sources, reducing hallucination and keeping responses traceable to their origin.
+4. **Extract structured medical information**: a dedicated extraction agent converts free-form conversation into a structured medical record: chief complaint, symptoms and severity, vital signs, red-flag symptoms, medical history, lifestyle context, and pain assessment. The agent merges new input field-by-field into the existing record so that previously captured details are never lost, even across multiple turns.
+5. **Assess urgency through a triage engine**: the structured medical information is evaluated against a five-level severity scale (Crisis, High, Medium, Low, None), or flagged as needing more information. Each triage decision is accompanied by an explicit rationale, the logic used to reach the classification and the logic used to exclude other paths, rather than a bare label.
+6. **Recommend a medical specialty**: when the triage outcome indicates a doctor visit is appropriate, a recommendation agent matches the patient's condition against the platform's available specialties and returns a specific recommendation with a stated reason.
+7. **Connect patients with doctors through online video consultations**: patients can browse available doctors filtered by the recommended specialty and book or join a live consultation directly from the app.
+8. **Generate a structured SOAP report**: once a consultation is needed, the system automatically compiles the interview, triage assessment, and history into a standard SOAP-format report (Subjective, Objective, Assessment, Plan), giving the doctor a ready summary before the session starts.
+9. **Monitor for safety and explainability**: every AI-generated output is paired with a computed confidence score, and all inputs/outputs are logged in an auditable trail, so that both the reasoning behind a triage decision and the sources behind a RAG answer can be reviewed and verified.
 **Why this structure matters:** rather than treating the online consultation and health-education features as separate add-ons, they sit downstream of the same reasoning pipeline that drives the medical interview, so a patient's path naturally flows from *AI Medical Interview → Health Education (RAG) → Triage & Specialty Matching → Online Consultation → SOAP Summary for the Doctor*, with confidence scoring and monitoring running underneath the whole chain rather than bolted onto the end of it.
 
 ![application_flow](/assets/img/design.drawio.svg)
----
-Here's a tightened, accurate rewrite aligned with the actual architecture described in your report:
 
 ---
 
@@ -94,8 +82,7 @@ Here's a tightened, accurate rewrite aligned with the actual architecture descri
 
 ### 1. Structured Medical Interview
 The core of Meddit is an AI-driven medical interview, not a fixed questionnaire.
-
-When a patient reports a symptom, the system determines what additional information is clinically relevant for example, if a patient mentions chest pain, it identifies severity, duration, location, and associated symptoms as the next things to clarify, rather than working through a scripted list.
+When a patient reports a symptom, the system determines what additional information is clinically relevant. For example, if a patient mentions chest pain, it identifies severity, duration, location, and associated symptoms as the next things to clarify, rather than working through a scripted list.
 
 The interview is **stateful**: instead of relying on raw conversation history, Meddit maintains a structured medical record (`MedicalInformationExtracted`) that persists across turns — chief complaint, symptoms, vital signs, red-flag symptoms, medical history, and pain assessment. This lets the system distinguish between what has already been established and what still needs to be collected, so the same question is never asked twice.
 
@@ -151,6 +138,7 @@ The interview is **stateful**: instead of relying on raw conversation history, M
   }
 }
 ```
+
 ---
 
 ### 2. Intent Classification
@@ -186,6 +174,84 @@ The structured record becomes the current interview state, which the **triage ag
 This loop lets the interview adapt to the patient rather than forcing everyone through the same sequence. If duration and severity have already been reported, the system moves on to the remaining clinically relevant gaps instead of re-asking. Once enough information is available, the state is handed to the triage engine to assess urgency (Crisis, High, Medium, Low, None, or More Info) and, when appropriate, to recommend a specialty and generate a SOAP summary for the doctor.
 
 ![meddit triage](/assets/img/meddit_triage.png)
+
+
+
+### 5. Triage and Urgency Assessment
+
+Once enough information has been collected, Meddit evaluates the urgency of the situation.
+
+The system categorizes cases into different urgency levels:
+
+**None → Low → Medium → High → Crisis**
+
+The resulting category influences the recommended next step.
+
+For lower-risk situations, the system may provide appropriate general guidance.
+
+For higher-risk situations, the system can recommend seeking professional medical care and identify an appropriate specialty.
+
+For crisis-level situations, the system interrupts the conversational flow immediately and displays clear, actionable emergency guidance — instructing the patient to call an ambulance or contact someone nearby — rather than continuing with further interview questions. The platform does not place emergency calls on the patient's behalf; it is designed to prompt immediate human action rather than take that action itself.
+
+The goal is not to replace a doctor or provide a definitive diagnosis.
+
+Instead, the triage component is designed to help determine **what the patient should do next**.
+
+![Triage System](/assets/img/meddit_triage.png)
+
+---
+
+### 6. Retrieval-Augmented Generation
+
+A general-purpose language model does not automatically provide the controlled and consistent knowledge base that a medical application requires.
+
+To address this, Meddit uses **Retrieval-Augmented Generation (RAG)**.
+
+Relevant information is retrieved from a controlled knowledge base and provided to the language model as context when generating an answer.
+
+The process can be summarized as:
+
+**Patient question → Retrieval → Relevant medical information → LLM → Context-aware response**
+
+This allows the generation component to ground its responses in the information available in the knowledge base rather than relying entirely on its pretrained knowledge.
+
+It also provides a mechanism for controlling which sources of information are available to the system.
+
+---
+
+### 7. Context-Aware Responses
+
+The final response generation stage considers multiple sources of information:
+
+* The patient's current message.
+* Previously collected medical history.
+* Structured symptom information.
+* The current interview state.
+* Triage information.
+* Retrieved medical knowledge.
+
+This allows the system to generate responses that are specific to the ongoing interview rather than generic answers to isolated questions.
+
+For example, the same question can require a different response depending on the symptoms and information already collected from the patient.
+
+---
+
+### 8. Doctor Handoff
+
+Meddit is not designed to keep the patient inside an AI conversation indefinitely.
+
+When professional medical care is recommended, the platform can connect the patient with an appropriate medical specialty and support communication with a doctor.
+
+The system can also generate a **structured summary of the patient's interview**.
+
+Instead of requiring the doctor to read the entire conversation, the summary organizes relevant information collected during the AI interview into a more useful format.
+
+The AI-generated report covers the Subjective, Objective, and Assessment components — synthesized from the structured medical information, the triage output, the full conversation, and the recommended specialty — while the Plan is deliberately left for the doctor to complete, since treatment planning requires clinical judgment the AI is not positioned to provide. This draft is explicitly a starting point, not a final record: before a consultation can be marked complete, the doctor must review and edit the AI-generated draft — correcting, adding, or removing content as needed — and save it themselves. Only the doctor-edited version is persisted as the official record of the consultation. This keeps a clinician firmly in the loop on the platform's only artifact with lasting clinical and legal weight, consistent with Meddit's broader principle of AI as decision support rather than a replacement for professional judgment.
+
+
+This creates a workflow in which AI assists with information gathering while a healthcare professional remains involved in the actual medical care.
+
+![Doctor Dashboard](/assets/img/meddit_dashboard.png)
 
 ---
 
@@ -231,84 +297,6 @@ In short, structuring the data wasn't just a data-modeling convenience — it's 
 
 ---
 
-## 5. Triage and Urgency Assessment
-
-Once enough information has been collected, Meddit evaluates the urgency of the situation.
-
-The system categorizes cases into different urgency levels:
-
-**None → Low → Medium → High → Crisis**
-
-The resulting category influences the recommended next step.
-
-For lower-risk situations, the system may provide appropriate general guidance.
-
-For higher-risk situations, the system can recommend seeking professional medical care and identify an appropriate specialty.
-
-For crisis-level situations, the system interrupts the conversational flow immediately and displays clear, actionable emergency guidance — instructing the patient to call an ambulance or contact someone nearby — rather than continuing with further interview questions. The platform does not place emergency calls on the patient's behalf; it is designed to prompt immediate human action rather than take that action itself.
-
-The goal is not to replace a doctor or provide a definitive diagnosis.
-
-Instead, the triage component is designed to help determine **what the patient should do next**.
-
-![Triage System](/assets/img/meddit_triage.png)
-
----
-
-## 6. Retrieval-Augmented Generation
-
-A general-purpose language model does not automatically provide the controlled and consistent knowledge base that a medical application requires.
-
-To address this, Meddit uses **Retrieval-Augmented Generation (RAG)**.
-
-Relevant information is retrieved from a controlled knowledge base and provided to the language model as context when generating an answer.
-
-The process can be summarized as:
-
-**Patient question → Retrieval → Relevant medical information → LLM → Context-aware response**
-
-This allows the generation component to ground its responses in the information available in the knowledge base rather than relying entirely on its pretrained knowledge.
-
-It also provides a mechanism for controlling which sources of information are available to the system.
-
----
-
-## 7. Context-Aware Responses
-
-The final response generation stage considers multiple sources of information:
-
-* The patient's current message.
-* Previously collected medical history.
-* Structured symptom information.
-* The current interview state.
-* Triage information.
-* Retrieved medical knowledge.
-
-This allows the system to generate responses that are specific to the ongoing interview rather than generic answers to isolated questions.
-
-For example, the same question can require a different response depending on the symptoms and information already collected from the patient.
-
----
-
-## 8. Doctor Handoff
-
-Meddit is not designed to keep the patient inside an AI conversation indefinitely.
-
-When professional medical care is recommended, the platform can connect the patient with an appropriate medical specialty and support communication with a doctor.
-
-The system can also generate a **structured summary of the patient's interview**.
-
-Instead of requiring the doctor to read the entire conversation, the summary organizes relevant information collected during the AI interview into a more useful format.
-
-The AI-generated report covers the Subjective, Objective, and Assessment components — synthesized from the structured medical information, the triage output, the full conversation, and the recommended specialty — while the Plan is deliberately left for the doctor to complete, since treatment planning requires clinical judgment the AI is not positioned to provide. This draft is explicitly a starting point, not a final record: before a consultation can be marked complete, the doctor must review and edit the AI-generated draft — correcting, adding, or removing content as needed — and save it themselves. Only the doctor-edited version is persisted as the official record of the consultation. This keeps a clinician firmly in the loop on the platform's only artifact with lasting clinical and legal weight, consistent with Meddit's broader principle of AI as decision support rather than a replacement for professional judgment.
-
-
-This creates a workflow in which AI assists with information gathering while a healthcare professional remains involved in the actual medical care.
-
-![Doctor Dashboard](/assets/img/meddit_dashboard.png)
-
----
-
 ## System Architecture
 
 Meddit was built as a distributed, multi-component platform rather than a single AI model wrapped in a chat interface. Each component has a distinct responsibility, communicating through well-defined APIs so that the AI pipeline, patient experience, and clinical workflow can evolve independently.
@@ -349,7 +337,8 @@ Persistent data is stored in a relational database **(PostgreSQL)** accessed thr
 
 ![meddit erd](</assets/img/meddit_erd (2).png>)
 
-----
+---
+
 ## Explainability
 
 ![Meddit](/assets/img/meddit_event_inspector_1.png)
