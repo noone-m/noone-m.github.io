@@ -84,7 +84,7 @@ At the core of the system is a multi-agent architecture coordinated by a central
 The core of Meddit is an AI-driven medical interview, not a fixed questionnaire.
 When a patient reports a symptom, the system determines what additional information is clinically relevant. For example, if a patient mentions chest pain, it identifies severity, duration, location, and associated symptoms as the next things to clarify, rather than working through a scripted list.
 
-The interview is **stateful**: instead of relying on raw conversation history, Meddit maintains a structured medical record (`MedicalInformationExtracted`) that persists across turns — chief complaint, symptoms, vital signs, red-flag symptoms, medical history, and pain assessment. This lets the system distinguish between what has already been established and what still needs to be collected, so the same question is never asked twice.
+The interview is **stateful**: instead of relying on raw conversation history, Meddit maintains a structured medical record (`MedicalInformationExtracted`) that persists across turns: chief complaint, symptoms, vital signs, red-flag symptoms, medical history, and pain assessment. This lets the system distinguish between what has already been established and what still needs to be collected, so the same question is never asked twice.
 
 ```json
 {
@@ -152,7 +152,7 @@ Not every patient message is a new medical complaint. A message might:
 * Ask for clarification.
 * Change or correct previously provided information.
 
-Meddit's **intent classifier agent** determines which of these categories a message falls into — routing it to a medical interview, a general-information (RAG) path, a clarification step, or an out-of-scope response — before anything else happens. This routing happens first so that every downstream agent interprets the message in the context of the current interview state, rather than as an isolated input.
+Meddit's **intent classifier agent** determines which of these categories a message falls into: routing it to a medical interview, a general-information (RAG) path, a clarification step, or an out-of-scope response; before anything else happens. This routing happens first so that every downstream agent interprets the message in the context of the current interview state, rather than as an isolated input.
 
 ![Intent Classifier](/assets/img/intent_classifier.png)
 
@@ -161,7 +161,7 @@ Meddit's **intent classifier agent** determines which of these categories a mess
 ### 3. Symptom Extraction
 Once a message is classified as part of the medical interview, a dedicated **extraction agent** converts it into structured data: symptom name, presence or absence, self-reported severity, onset, and related context.
 
-This matters because a symptom the patient explicitly denies is treated differently from one that simply hasn't come up yet — missing information is never silently interpreted as a negative finding. New information is merged field-by-field into the existing record, so a partial or incomplete update never overwrites data already collected earlier in the conversation.
+This matters because a symptom the patient explicitly denies is treated differently from one that simply hasn't come up yet. Missing information is never silently interpreted as a negative finding. New information is merged field-by-field into the existing record, so a partial or incomplete update never overwrites data already collected earlier in the conversation.
 
 ---
 
@@ -191,7 +191,7 @@ For lower-risk situations, the system may provide appropriate general guidance.
 
 For higher-risk situations, the system can recommend seeking professional medical care and identify an appropriate specialty.
 
-For crisis-level situations, the system interrupts the conversational flow immediately and displays clear, actionable emergency guidance — instructing the patient to call an ambulance or contact someone nearby — rather than continuing with further interview questions. The platform does not place emergency calls on the patient's behalf; it is designed to prompt immediate human action rather than take that action itself.
+For crisis-level situations, the system interrupts the conversational flow immediately and displays clear, actionable emergency guidance; instructing the patient to call an ambulance or contact someone nearby; rather than continuing with further interview questions. The platform does not place emergency calls on the patient's behalf; it is designed to prompt immediate human action rather than take that action itself.
 
 The goal is not to replace a doctor or provide a definitive diagnosis.
 
@@ -246,7 +246,7 @@ The system can also generate a **structured summary of the patient's interview**
 
 Instead of requiring the doctor to read the entire conversation, the summary organizes relevant information collected during the AI interview into a more useful format.
 
-The AI-generated report covers the Subjective, Objective, and Assessment components — synthesized from the structured medical information, the triage output, the full conversation, and the recommended specialty — while the Plan is deliberately left for the doctor to complete, since treatment planning requires clinical judgment the AI is not positioned to provide. This draft is explicitly a starting point, not a final record: before a consultation can be marked complete, the doctor must review and edit the AI-generated draft — correcting, adding, or removing content as needed — and save it themselves. Only the doctor-edited version is persisted as the official record of the consultation. This keeps a clinician firmly in the loop on the platform's only artifact with lasting clinical and legal weight, consistent with Meddit's broader principle of AI as decision support rather than a replacement for professional judgment.
+The AI-generated report covers the Subjective, Objective, and Assessment components, synthesized from the structured medical information, the triage output, the full conversation, and the recommended specialty, while the Plan is deliberately left for the doctor to complete, since treatment planning requires clinical judgment the AI is not positioned to provide. This draft is explicitly a starting point, not a final record: before a consultation can be marked complete, the doctor must review and edit the AI-generated draft; correcting, adding, or removing content as needed; and save it themselves. Only the doctor-edited version is persisted as the official record of the consultation. This keeps a clinician firmly in the loop on the platform's only artifact with lasting clinical and legal weight, consistent with Meddit's broader principle of AI as decision support rather than a replacement for professional judgment.
 
 
 This creates a workflow in which AI assists with information gathering while a healthcare professional remains involved in the actual medical care.
@@ -257,17 +257,17 @@ This creates a workflow in which AI assists with information gathering while a h
 
 ## A Challenge We Encountered
 
-LLMs are notoriously unreliable at updating nested JSON structures across multiple turns. Since the medical interview state is a fairly deep object — symptoms, vital signs, medical history, pain assessment, and more all nested together — asking a model to simply "update the record" each turn turned out to be fragile.
+LLMs are notoriously unreliable at updating nested JSON structures across multiple turns. Since the medical interview state is a fairly deep object: symptoms, vital signs, medical history, pain assessment, and more all nested together. Asking a model to simply "update the record" each turn turned out to be fragile.
 
-In practice, if a patient said *"I have a mild headache"* in turn one and *"It started yesterday"* in turn three, a standard extraction prompt would often regenerate the entire record from scratch based on the latest message alone. The duration would get added, but the severity or even the symptom name from an earlier turn could silently disappear — not because the patient retracted it, but because the model wasn't reliably carrying forward information it wasn't actively looking at. Over a long interview, this kind of silent overwrite could erase clinically important details without any visible error.
+In practice, if a patient said *"I have a mild headache"* in turn one and *"It started yesterday"* in turn three, a standard extraction prompt would often regenerate the entire record from scratch based on the latest message alone. The duration would get added, but the severity or even the symptom name from an earlier turn could silently disappear; not because the patient retracted it, but because the model wasn't reliably carrying forward information it wasn't actively looking at. Over a long interview, this kind of silent overwrite could erase clinically important details without any visible error.
 
-A related problem sat right next to this one: the system needed to tell the difference between a symptom the patient explicitly ruled out ("No chest pain") and a symptom that simply hadn't come up yet. Treating both cases as equivalent — or worse, letting the model guess — risked either fabricating negative findings or losing track of what still needed to be asked.
+A related problem sat right next to this one: the system needed to tell the difference between a symptom the patient explicitly ruled out ("No chest pain") and a symptom that simply hadn't come up yet. Treating both cases as equivalent or worse, letting the model guess risked either fabricating negative findings or losing track of what still needed to be asked.
 
 **How We Solved It**
 
-We moved away from full-record regeneration and built an explicit **delta-merging pipeline** inside the Extraction Agent. Instead of asking the LLM to output the complete `MedicalInformationExtracted` object every turn, the agent only emits a partial update — the fields that changed based on the latest message. That delta is validated and then merged field-by-field into the persistent state vector, so information from earlier turns that isn't mentioned again is simply left untouched rather than being at risk of being overwritten.
+We moved away from full-record regeneration and built an explicit **delta-merging pipeline** inside the Extraction Agent. Instead of asking the LLM to output the complete `MedicalInformationExtracted` object every turn, the agent only emits a partial updates. That delta is validated and then merged field-by-field into the persistent state vector, so information from earlier turns that isn't mentioned again is simply left untouched rather than being at risk of being overwritten.
 
-To handle the negative-finding problem, we enforced a strict three-way distinction at the schema level: a field can be explicitly `false`/denied, explicitly populated with a value, or `null`. Null is never treated as a negative finding — it only ever means "not yet discussed" — which keeps the triage and downstream agents from ever assuming the absence of a symptom the patient was simply never asked about.
+To handle the negative-finding problem, we enforced a strict three-way distinction at the schema level: a field can be explicitly `false`/denied, explicitly populated with a value, or `null`. Null is never treated as a negative finding, it only ever means "not yet discussed", which keeps the triage and downstream agents from ever assuming the absence of a symptom the patient was simply never asked about.
 
 Together, these two changes turned the interview state from something regenerated and re-guessed every turn into something that accumulates reliably, turn after turn, the way an actual clinical intake would.
 
@@ -275,7 +275,7 @@ Together, these two changes turned the interview state from something regenerate
 
 ## Improving Reliability Through Structured Data
 
-Another important design decision was to avoid relying exclusively on free-form model output. Free text is easy for a language model to generate, but it's brittle to validate, hard to store consistently, and difficult to reason over reliably in downstream logic like triage scoring or SOAP generation. Instead, every stage of the pipeline — intent classification, symptom extraction, triage assessment, and specialty recommendation — communicates through explicit, typed JSON schemas rather than unconstrained natural language.
+Another important design decision was to avoid relying exclusively on free-form model output. Free text is easy for a language model to generate, but it's brittle to validate, hard to store consistently, and difficult to reason over reliably in downstream logic like triage scoring or SOAP generation. Instead, every stage of the pipeline like intent classification, symptom extraction, triage assessment, and specialty recommendation communicates through explicit, typed JSON schemas rather than unconstrained natural language.
 
 For symptoms specifically, severity is never left as an open-ended description. It's constrained to a fixed set of values:
 
@@ -284,16 +284,16 @@ For symptoms specifically, severity is never left as an open-ended description. 
 * `moderate`
 * `severe`
 
-and pain is captured separately on a standardized 0–10 scale (`pain_scale_0_10`), alongside structured fields for location and type (sharp, dull, burning, unknown). Vital signs follow the same principle — each measurement (temperature, heart rate, blood pressure, respiratory rate, oxygen saturation) is either a concrete numeric value or one of a small set of controlled states (`unmeasurable`, `low`, `normal`, `high`, `unknown`), rather than a free-text field the backend would have to parse and interpret after the fact.
+and pain is captured separately on a standardized 0–10 scale (`pain_scale_0_10`), alongside structured fields for location and type (sharp, dull, burning, unknown). Vital signs follow the same principle; each measurement (temperature, heart rate, blood pressure, respiratory rate, oxygen saturation) is either a concrete numeric value or one of a small set of controlled states (`unmeasurable`, `low`, `normal`, `high`, `unknown`), rather than a free-text field the backend would have to parse and interpret after the fact.
 
 This constraint has several concrete benefits:
 
-* **Validation becomes deterministic.** The backend can check that a field matches its expected type or enum rather than trying to infer meaning from arbitrary phrasing — a symptom is either `mild`, `moderate`, or `severe`, never something ambiguous like "kind of bad."
+* **Validation becomes deterministic.** The backend can check that a field matches its expected type or enum rather than trying to infer meaning from arbitrary phrasing, a symptom is either `mild`, `moderate`, or `severe`, never something ambiguous like "kind of bad."
 * **Merging and persistence stay reliable.** Because every field has a known shape, the delta-merging pipeline can update the interview state field-by-field with confidence, rather than guessing how a chunk of free text should be reconciled with what's already stored.
 * **Downstream agents can consume the data directly.** The triage engine, the SOAP report generator, and the specialty recommender all operate on the same structured record, so a severity value or vital sign never needs to be re-parsed or reinterpreted differently by each stage.
 * **The system stays predictable end-to-end.** Because every agent in the pipeline emits and consumes the same well-defined schema, the overall behavior of the system doesn't depend on the LLM's response format staying consistent from one call to the next.
 
-In short, structuring the data wasn't just a data-modeling convenience — it's what made it possible for a chain of independent agents (classifier, extractor, triage engine, recommender, SOAP generator) to hand information to one another reliably, without each step silently degrading the quality of what came before it.
+In short, structuring the data wasn't just a data-modeling convenience, it's what made it possible for a chain of independent agents (classifier, extractor, triage engine, recommender, SOAP generator) to hand information to one another reliably, without each step silently degrading the quality of what came before it.
 
 ---
 
@@ -313,7 +313,7 @@ The patient-facing experience is delivered through a **Flutter** mobile applicat
 
 ### Backend
 
-The system's backend is built on **FastAPI**, using asynchronous request handling throughout to keep the platform responsive under concurrent load — a requirement given that every patient interaction involves multiple sequential AI calls (intent classification, extraction, triage, and generation) rather than a single request-response cycle.
+The system's backend is built on **FastAPI**, using asynchronous request handling throughout to keep the platform responsive under concurrent load; a requirement given that every patient interaction involves multiple sequential AI calls (intent classification, extraction, triage, and generation) rather than a single request-response cycle.
 
 The backend is responsible for:
 
@@ -345,15 +345,15 @@ Persistent data is stored in a relational database **(PostgreSQL)** accessed thr
 
 ![Meddit](/assets/img/meddit_event_inspector_2.png)
 
-A recurring theme throughout Meddit's design was the rejection of the "black box" model of AI decision-making. In a clinical context, an urgency assessment or a specialty recommendation is only useful if the reasoning behind it can be inspected, questioned, and audited — by the patient, by the treating doctor, and by the team maintaining the system.
+A recurring theme throughout Meddit's design was the rejection of the "black box" model of AI decision-making. In a clinical context, an urgency assessment or a specialty recommendation is only useful if the reasoning behind it can be inspected, questioned, and audited by the patient, by the treating doctor, and by the team maintaining the system.
 
 Rather than bolting explainability on as a logging afterthought, we treated it as an architectural constraint from the start, expressed through three mechanisms:
 
 **Decision rationale, not just labels.** Both the triage agent and the specialty recommender are required to output structured reasoning alongside their conclusions. The triage agent doesn't simply return `high`; it returns a `chosen_logic` field describing why that severity was selected from the patient's symptoms, and an `exclusion_logic` field explaining why more severe or less severe classifications were ruled out. The specialty recommender behaves the same way, pairing its recommendation with a stated reason drawn from the patient's condition. This forces every categorical decision in the pipeline to carry its own justification, rather than leaving a doctor to reverse-engineer the model's reasoning from the output alone.
 
-**Source traceability for retrieved information.** In the RAG path, the system never presents a generated answer without a link back to the underlying source. Every fact surfaced to the patient is tied to the specific document or passage it was retrieved from, which keeps general health answers verifiable and makes it straightforward to catch cases where a response has drifted from the retrieved context — a direct mitigation against hallucination in a domain where an ungrounded claim carries real risk.
+**Source traceability for retrieved information.** In the RAG path, the system never presents a generated answer without a link back to the underlying source. Every fact surfaced to the patient is tied to the specific document or passage it was retrieved from, which keeps general health answers verifiable and makes it straightforward to catch cases where a response has drifted from the retrieved context; a direct mitigation against hallucination in a domain where an ungrounded claim carries real risk.
 
-**A complete, queryable audit trail.** Every stage of a patient's session — intent classification, information extraction, triage evaluation, clarification requests — is logged as a discrete, timestamped event with its full input and output payload. During development, this log became more than a debugging aid: we built an internal execution-path **inspector** that visualizes a session as a graph of agent calls, letting us step through exactly what a given agent received, what it produced, and how that fed the next stage. Beyond development, the same trail supports post-hoc clinical review and provides a foundation for detecting systematic bias or drift in the pipeline's decisions over time.
+**A complete, queryable audit trail.** Every stage of a patient's session like intent classification, information extraction, triage evaluation, clarification requests is logged as a discrete, timestamped event with its full input and output payload. During development, this log became more than a debugging aid: we built an internal execution-path **inspector** that visualizes a session as a graph of agent calls, letting us step through exactly what a given agent received, what it produced, and how that fed the next stage. Beyond development, the same trail supports post-hoc clinical review and provides a foundation for detecting systematic bias or drift in the pipeline's decisions over time.
 
 Together, these mechanisms mean that Meddit's outputs are traceable end-to-end: a doctor reviewing a SOAP summary can see not just the recommended specialty, but why it was recommended, and a developer debugging an unexpected triage result can reconstruct the exact chain of agent decisions that produced it.
 
@@ -363,11 +363,11 @@ Together, these mechanisms mean that Meddit's outputs are traceable end-to-end: 
 
 ### Conversational AI Requires State
 
-One of the biggest lessons from this project was that a medical chatbot cannot be treated as a simple sequence of independent prompts and responses. A clinically useful system needs an explicit model of what has already been established, what remains unknown, and how each new message should update that model — treating the conversation as a state machine rather than a stream of isolated exchanges. Once we adopted this framing, entire categories of bugs (repeated questions, contradictory follow-ups, lost context) simply stopped being possible by construction.
+One of the biggest lessons from this project was that a medical chatbot cannot be treated as a simple sequence of independent prompts and responses. A clinically useful system needs an explicit model of what has already been established, what remains unknown, and how each new message should update that model, treating the conversation as a state machine rather than a stream of isolated exchanges. Once we adopted this framing, entire categories of bugs (repeated questions, contradictory follow-ups, lost context) simply stopped being possible by construction.
 
 ### Structured Outputs Matter
 
-Language models are powerful at interpreting natural language, but application logic — validation, persistence, triage scoring, report generation — requires predictable, well-typed data. Enforcing structured schemas at every boundary between pipeline stages made the system dramatically easier to reason about, test, and integrate with the backend and database. In hindsight, the decision to constrain LLM outputs to explicit schemas early on was one of the highest-leverage design choices in the entire project.
+Language models are powerful at interpreting natural language, but application logic like validation, persistence, triage scoring, report generation requires predictable, well-typed data. Enforcing structured schemas at every boundary between pipeline stages made the system dramatically easier to reason about, test, and integrate with the backend and database. In hindsight, the decision to constrain LLM outputs to explicit schemas early on was one of the highest-leverage design choices in the entire project.
 
 ### AI Engineering Is Different From Model Development
 
@@ -382,11 +382,11 @@ Building Meddit reinforced that working with LLMs in a production application is
 * Error handling and graceful degradation
 * Monitoring, logging, and auditability
 
-The AI model is one component embedded in a much larger application — and its reliability in practice depends almost entirely on the quality of that surrounding system.
+The AI model is one component embedded in a much larger application and its reliability in practice depends almost entirely on the quality of that surrounding system.
 
 ### Medical AI Requires Conservative Design
 
-Working on a healthcare-adjacent application sharpened our understanding of the boundary between **decision support** and **medical diagnosis**. Meddit is deliberately scoped to assist with information gathering, urgency assessment, and routing to appropriate care — not to diagnose or replace a clinician's judgment. This principle shaped concrete design decisions throughout the system: the strict `null`-versus-negative-finding distinction, the mandatory rationale fields on every triage decision, the confidence scoring on generated content, and the immediate, non-conversational escalation path for crisis-level cases. In a medical context, being conservative about what the AI is allowed to assert is as important as what it's technically capable of generating.
+Working on a healthcare-adjacent application sharpened our understanding of the boundary between **decision support** and **medical diagnosis**. Meddit is deliberately scoped to assist with information gathering, urgency assessment, and routing to appropriate care; not to diagnose or replace a clinician's judgment. This principle shaped concrete design decisions throughout the system: the strict `null`-versus-negative-finding distinction, the mandatory rationale fields on every triage decision, the confidence scoring on generated content, and the immediate, non-conversational escalation path for crisis-level cases. In a medical context, being conservative about what the AI is allowed to assert is as important as what it's technically capable of generating.
 
 ---
 
@@ -450,4 +450,4 @@ There are several directions worth exploring in a future iteration of the projec
 
 Meddit was an exploration of how modern AI techniques can be combined with disciplined software engineering to build a practical, production-oriented telehealth system. The project moved well beyond simply integrating an LLM into an application: it required designing a stateful medical interview, reliable structured information extraction, dynamic conversation flow, retrieval-augmented generation grounded in a controlled knowledge base, multi-level urgency assessment, an explainability layer capable of justifying every clinically relevant decision, and a complete backend and multi-platform application around all of these components.
 
-The most important lesson from building Meddit was that useful AI systems are rarely defined by a single powerful model. They are defined by how models, structured data, business logic, and software architecture are made to work together reliably — turn after turn, decision after decision, in a domain where getting it wrong has real consequences.
+The most important lesson from building Meddit was that useful AI systems are rarely defined by a single powerful model. They are defined by how models, structured data, business logic, and software architecture are made to work together reliably turn after turn, decision after decision, in a domain where getting it wrong has real consequences.
